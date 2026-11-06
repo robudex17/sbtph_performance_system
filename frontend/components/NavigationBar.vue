@@ -103,23 +103,8 @@
                   </select>
                 </div>
 
-                <!-- Filter Value Dropdown -->
-                <div class="flex items-center gap-2"  v-if="data?.length > 0 && (currentUser.role == 'admin' || currentUser.role == 'poweruser' || currentUser.agent_type == 2)" >
-                  <label for="filter-value" class="text-sm font-medium text-gray-700 whitespace-nowrap">
-                    Value:
-                  </label>
-                  <select
-                    id="filter-value"
-                    v-model="selectedFilterValue"
-                    class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  >
-                    <option value="all" v-if="currentUser.role == 'admin' || currentUser.role == 'poweruser' || currentUser.agent_type ==2">All</option>
-                  
-                    <option v-for="option in filterValueList" :key="option.id" :value="option.id">
-                      {{ option.name }}
-                    </option>
-                  </select>
-                </div>
+                <!-- The name / team / market is chosen on the table of the page (several at once, no new search): the search always loads
+                     the whole range, selectedFilterValue stays 'all' -->
 
                 <!-- Start Date -->
                 <div class="flex items-center gap-2">
@@ -260,7 +245,8 @@
     //   'lms','agent', 'individual','market', 'team'
     // ])
 
-    if (currentUser.role != 'admin' && currentUser.role != 'poweruser' && currentUser.agent_type !=2){
+    // the GOM (position level 15) searches everybody like the admin
+    if (currentUser.role != 'admin' && currentUser.role != 'poweruser' && currentUser.agent_type !=2 && Number(currentUser.position_level) !== 15){
       filterBy.value = [ 'individual', 'team', 'overall']
       
      

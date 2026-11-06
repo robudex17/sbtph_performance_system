@@ -21,7 +21,9 @@ exports.fetchCustomSearch = async (req,res, next ) => {
    const loginUser = req.user 
    
    //  filterId  in the query if the login user are admin , poweruser or agent_type = 2
-   if (loginUser.role != 'admin' && loginUser.role != 'poweruser'  && loginUser.agent_type !== 2){
+   // the GOM (position level 15, view only) sees everybody like the admin; the others only their own team / market / agent
+   const isGom = Number(loginUser.position_level) === 15
+   if (loginUser.role != 'admin' && loginUser.role != 'poweruser'  && loginUser.agent_type !== 2 && !isGom){
        
         switch(filterBy){
           case "team":
@@ -249,7 +251,22 @@ exports.fetchCustomSearch = async (req,res, next ) => {
          return fetchIndividualTargetShipok(filterId, `${customSearchQuery} ORDER BY t.id ASC;` , monthNames[month - 1], year);
         //  return fetchIndividualTargetShipok(agent_id, `${customSearchQuery} AND sa.id=?` , monthNames[month - 1], year);
     });
-    const monthResults = await Promise.all(monthQueries);
+    let monthResults = await Promise.all(monthQueries);
+
+    // The table filter of the page (one or several names): only the rows of the chosen ids, so the Excel file has the rows of the table.
+    // individual / agent / lms: the agent id, market: the market id, team: the team id. Nothing chosen = everything of the range.
+    const selectedIds = String(req.query.filterIds || '').split(',').map(id => id.trim()).filter(id => id !== '')
+    const selectedField = { individual: 'id', agent: 'id', lms: 'id', market: 'market_id', team: 'team_id' }[filterBy]
+    if (selectedIds.length > 0 && selectedField) {
+        // a month without a chosen row is dropped (the Excel and the groups need at least one row in a month)
+        monthResults = monthResults
+            .map(rows => rows.filter(row => selectedIds.includes(String(row[selectedField]))))
+            .filter(rows => rows.length > 0)
+
+        if (monthResults.length === 0 && req.export_to_excel) {
+            return res.status(404).json({ message: 'No data for the selected filter' })
+        }
+    }
 
   
      //if team and overall combine group it 
