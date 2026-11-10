@@ -25,7 +25,7 @@
           :exportFileName="exportFileName"
           :query="{ ...route.query, department: departmentCode }"
           :token="token"
-          :incomplete="incomplete"
+          :incomplete="false"
         ></export-to-excel-component>
       </div>
 

@@ -5,8 +5,8 @@ const { getDataBorder, getHeaderBorder, getHeaderStyle } = require('../helper_sc
 
 // Excel export of the CSD leaderboard (table view of the page), same look as the sales leaderboard export.
 // GET /evaluation/leaderboard_export/:scope?year_month=YYYY-MM   (admin and poweruser)
-// Only agent and team_leader: the team board is shown as cards only. Like the page, it is not exported
-// while the evaluation of somebody in the list is not submitted yet.
+// Only agent and team_leader: the team board is shown as cards only. It is exported also when the evaluation of somebody in
+// the list is not submitted yet (that row keeps its incomplete rating).
 
 const SCOPE_TITLES = {
     agent: 'LEADERBOARD - AGENTS (MONTHLY PERFORMANCE)',
@@ -158,10 +158,8 @@ exports.csdLeaderboardExportToExcel = async (req, res, next) => {
         if (error) return res.status(error.status).json({ message: error.message })
         if (data.length === 0) return res.status(404).json({ message: 'No data to export' })
 
-        // same rule as the page: not complete while somebody is not submitted
-        if (data.some(row => row.submitted !== 1)) {
-            return res.status(400).json({ message: 'Data is not complete. Please submit the CSD Evaluation of all the employees first.' })
-        }
+        // The export does not wait for every row to be submitted any more (the file goes to the GOM): a row that is not submitted
+        // keeps its incomplete rating, like the page. To be decided again with the quarterly rule of the leaders ("due this month").
 
         const workbook = new ExcelJS.Workbook()
         const worksheet = workbook.addWorksheet(`${data[0].month}-${data[0].year}-SCORE`)
