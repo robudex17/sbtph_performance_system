@@ -37,7 +37,7 @@
                     :token="token"
                     :submitted="1"
                     :submittedArray="false"
-                    :incomplete="incomplete"
+                    :incomplete="false"
                     class="!text-white !text-[10px] !px-2 !py-1 !rounded !hover:bg-green-600 !transition-all !duration-200"
                   ></export-to-excel-component>
                 </div>
@@ -130,8 +130,6 @@ const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).
 const yearMonth = computed(() => route.query.year_month || currentYearMonth)
 
 const agents = computed(() => store.state.monthly)
-// the export needs every evaluation of the month to be submitted (the same rule as the sales pages)
-const incomplete = computed(() => agents.value.some(agent => agent.submitted !== 1))
 
 const exportUrl = `${API.evaluation_agent_performance_export}/monthly`
 const exportFileName = computed(() => `${departmentCode.value}-agents-monthly-performance-${yearMonth.value}.xlsx`)

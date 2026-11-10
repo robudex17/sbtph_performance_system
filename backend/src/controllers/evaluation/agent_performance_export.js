@@ -10,7 +10,7 @@ const { getDataBorder, getHeaderBorder, getHeaderStyle } = require('../helper_sc
 //   GET /evaluation/agent_performance_export/monthly/:employee_id?year_month=   one employee: the table + the metrics summary
 //   GET /evaluation/agent_performance_export/yearly?year=                       the list of the year
 //   GET /evaluation/agent_performance_export/yearly/:employee_id?year=          one employee: the submitted months + the year summary
-// Like the pages: the monthly exports need the evaluation to be submitted.
+// The monthly exports do not need every evaluation to be submitted (a row not submitted shows an incomplete rating).
 
 const { writeTable, capitalize, toNumber, RATING_COLORS, leadershipOf, individualScoreOf } = excel
 
@@ -86,9 +86,8 @@ exports.exportMonthly = async (req, res) => {
             : await getMonthlyList(req.user, yearMonth, department)
 
         if (rows.length === 0) return res.status(404).json({ message: 'No data to export' })
-        if (rows.some(row => row.submitted !== 1)) {
-            return res.status(400).json({ message: 'Data is not complete. Please submit the CSD Evaluation first.' })
-        }
+        // The export does not wait for every row to be submitted any more (the file goes to the GOM): a row that is not submitted
+        // shows its rating as incomplete, like the page. To be decided again with the quarterly rule of the leaders ("due this month").
 
         const workbook = new ExcelJS.Workbook()
         if (employeeId) {
