@@ -5,7 +5,7 @@ const bcyrpt = require('bcrypt')
 
 
 const { headCanReceiveFeedback } = require('./feedback_office')
-const { viewAllDepartmentsOf } = require('./view_access')
+const { viewerDepartmentsOf } = require('./department_viewers')
 const { generateAccessToken,  decodedToken } = require('../../utils/generate_token')
 
 exports.registerUser = async(req,res,next) => {
@@ -257,8 +257,8 @@ exports.loginUser = async(req,res, next) => {
        // false when the office of the immediate head does not receive feedback (Japan): the menu hides FEEDBACK HEAD
        user[0].head_receives_feedback = user[0].manager_id ? await headCanReceiveFeedback(user[0].login_id, user[0].manager_id) : true
 
-       // the departments where the person sees the whole department on the evaluation pages (evaluation_view_access)
-       user[0].view_all_departments = await viewAllDepartmentsOf(user[0].login_id)
+       // the departments where the person sees the whole department on the evaluation pages (department_performance_viewers)
+       user[0].viewer_departments = await viewerDepartmentsOf(user[0].login_id)
 
 
 
