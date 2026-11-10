@@ -23,9 +23,9 @@
             :exportFileName="exportFileName"
             :query="{ year_month: yearMonth, department: departmentCode }"
             :token="token"
-            :submitted="agent.submitted"
+            :submitted="1"
             :submittedArray="false"
-            :incomplete="agent.submitted !== 1"
+            :incomplete="false"
           ></export-to-excel-component>
         </div>
 
