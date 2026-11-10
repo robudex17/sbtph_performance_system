@@ -173,8 +173,8 @@ const DETAIL_FIELDS = [
     'performance_rating', 'absence_rating', 'tardiness_rating', 'memo_rating', 'feedback_rating',
 ]
 
-const limitDetails = (user, row, ownTeamId) => {
-    const allowed = canSeeDetails(user, row, ownTeamId)
+const limitDetails = (user, row, ownTeamId, department) => {
+    const allowed = canSeeDetails(user, row, ownTeamId, department)
     if (allowed) return { ...row, can_view_details: true }
     const publicRow = { ...row, can_view_details: false }
     DETAIL_FIELDS.forEach(field => delete publicRow[field])
@@ -266,7 +266,7 @@ exports.buildCsdLeaderboard = async (user, scope, yearMonth, employeeId, departm
     }
 
     // the details of the others stay on the server
-    data = data.map(row => row.teams ? { ...row, teams: row.teams.map(member => limitDetails(user, member, ownTeamId)) } : limitDetails(user, row, ownTeamId))
+    data = data.map(row => row.teams ? { ...row, teams: row.teams.map(member => limitDetails(user, member, ownTeamId, department)) } : limitDetails(user, row, ownTeamId, department))
 
     // one employee (the performance pages of the employees use this)
     if (employeeId) {

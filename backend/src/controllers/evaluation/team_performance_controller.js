@@ -157,16 +157,15 @@ exports.getTeamsYearly = async (user, year, teamId, department = 'csd') => {
 }
 
 // ---------------------------------------------------------------- routes
-const denyWithoutTeams = (user, res) => {
-    if (canViewTeams(user)) return false
+const denyWithoutTeams = (user, res, department) => {
+    if (canViewTeams(user, department)) return false
     res.status(403).json({ message: 'Access Denied: no team performance for your position' })
     return true
 }
 
 exports.fetchMonthly = async (req, res) => {
-    if (denyWithoutTeams(req.user, res)) return
-
     const department = readDepartment(req)
+    if (denyWithoutTeams(req.user, res, department)) return
     if (!department) return badDepartment(res)
 
     const yearMonth = req.query.year_month || currentYearMonth()
@@ -183,9 +182,8 @@ exports.fetchMonthly = async (req, res) => {
 }
 
 exports.fetchYearly = async (req, res) => {
-    if (denyWithoutTeams(req.user, res)) return
-
     const department = readDepartment(req)
+    if (denyWithoutTeams(req.user, res, department)) return
     if (!department) return badDepartment(res)
 
     const year = readYear(req)

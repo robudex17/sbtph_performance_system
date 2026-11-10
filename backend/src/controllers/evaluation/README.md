@@ -45,6 +45,7 @@ Every request has `?department=csd|collection|purchasing|hradmin` (`readDepartme
 - **Which Performance is typed or computed (per department, per month):** `RULES` in `performance_resolver.js`. A rule applies from its month on,
   the older months keep the rule they had.
 - **Who sees what:** `visibility_rules.js`. Who may read or change the evaluation: `middleware/evaluation_access.js`.
+- **View of the whole department:** a person can be given the manager's view (rows, details, team pages) of one department only, by a row in `evaluation_view_access` (person + department code). The login puts the departments in the token (`view_all_departments`, read by `controllers/common/view_access.js`), so the person logs in again after a change. The title, forms, Performance and feedback of the person do not change.
 - **The weights, the score tables, the rating names:** the database tables (`evaluation_criteria`, `csd_performance_score`, `result_ratings`...).
 - **The leadership forms:** `config/leadership_tasks.js` (`tasksFor`).
 - **A person that is not evaluated:** `EXCLUDED_POSITIONS` in `department_scope.js`.
