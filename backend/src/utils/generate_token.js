@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken')
 // const { refreshToken } = require('../controllers/sales_login_controller')
 
 exports.generateAccessToken = (user) => {
-    const {username, role, login_id, login_type, manager_id, team_id, market_id, agent_type, db_name, firstname, lastname, image_link,email, position_name, position_level, position_id, department_id, department_code, department_name, head_receives_feedback} = user
-    return jwt.sign({ username, role, login_id, login_type, manager_id, team_id, market_id, agent_type, db_name, firstname, lastname, image_link,email,position_name, position_level, position_id,department_id, department_code, department_name, head_receives_feedback
+    const {username, role, login_id, login_type, manager_id, team_id, market_id, agent_type, db_name, firstname, lastname, image_link,email, position_name, position_level, position_id, department_id, department_code, department_name, head_receives_feedback, viewer_departments} = user
+    return jwt.sign({ username, role, login_id, login_type, manager_id, team_id, market_id, agent_type, db_name, firstname, lastname, image_link,email,position_name, position_level, position_id,department_id, department_code, department_name, head_receives_feedback, viewer_departments
     },
       process.env.JWT_SECRET,{ expiresIn: '1d'}
     )

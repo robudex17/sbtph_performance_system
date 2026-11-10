@@ -41,6 +41,7 @@ The owner (Rogmer) built this project and wants to understand every part of it. 
 - Leadership evaluators: levels 15 / 10 / 9 / 8. Forms differ per position (`backend/src/config/leadership_tasks.js`, `tasksFor`).
 - CSD & Collections Quality Analyst / Trainer (position id 8, level 9) gives a QA score to staff of level 8 and below; matched by position name (`QA_POSITION_NAME` in `frontend/config/departments.js` and `backend/src/middleware/qa_access.js`).
 - Team leader leaderboard levels are 7 and 8 (never 9).
+- View of the whole department (manager's view of one department, for a person whose level does not give it): a row in `department_performance_viewers` (employee + department code). The login puts the list in the token (`viewer_departments`), so log in again after a change. Rules: `controllers/evaluation/visibility_rules.js`.
 - Evaluation submit/review: level 10 manager row = Submit All; write routes are locked after submit (`middleware/evaluation_lock.js`).
 
 ## Deploy (pm2 test server, Ubuntu)

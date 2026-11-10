@@ -44,10 +44,10 @@ const scoreMonth = async (user, yearMonth, tables, department = 'csd') => {
     // the team of the user in the month: the team of his/her own row
     const ownTeamId = scored.find(row => Number(row.id) === Number(user?.login_id))?.team_id ?? null
 
-    return { scored, ownTeamId }
+    return { scored, ownTeamId, department }
 }
 
-const visibleOf = (user, { scored, ownTeamId }) => scored.filter(row => canSee(user, row, ownTeamId))
+const visibleOf = (user, { scored, ownTeamId, department }) => scored.filter(row => canSee(user, row, ownTeamId, department))
 
 const buildMonth = async (user, yearMonth, tables, department = 'csd') =>
     visibleOf(user, await scoreMonth(user, yearMonth, tables, department))
